@@ -1,0 +1,38 @@
+version: '3.5'
+services:
+  jira:
+    image: cptactionhank/atlassian-jira-software
+    depends_on:
+      - postgres
+    environment:
+      - X_PROXY_NAME=${DOMAIN}
+      - X_PROXY_PORT=443
+      - X_PROXY_SCHEME=https
+    networks:
+      - traefik
+    external_links:
+      - ${TRAEFIK_CONTAINER}:${DOMAIN}
+    volumes:
+      - jira:/var/atlassian/jira
+    labels:
+      traefik.enable: true
+      traefik.port: 8080
+      traefik.frontend.rule: "Host:${DOMAIN}"
+    restart: unless-stopped
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - traefik
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+volumes:
+  jira:
+  postgres:
+networks:
+  traefik:
+    name: ${TRAEFIK_NETWORK}
+    external: true
