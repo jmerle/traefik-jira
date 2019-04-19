@@ -10,8 +10,6 @@ services:
       - X_PROXY_SCHEME=https
     networks:
       - traefik
-    external_links:
-      - ${TRAEFIK_CONTAINER}:${DOMAIN}
     volumes:
       - jira:/var/atlassian/jira
     labels:
