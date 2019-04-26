@@ -18,10 +18,11 @@ services:
       traefik.frontend.rule: "Host:${DOMAIN}"
     restart: unless-stopped
   postgres:
-    image: postgres
+    image: postgres:9.6
     environment:
       - POSTGRES_USER=jira
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--lc-collate C --lc-ctype C.UTF-8
     networks:
       - traefik
     volumes:
